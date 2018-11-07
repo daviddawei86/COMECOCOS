@@ -100,16 +100,22 @@ and open the template in the editor.
             var variableFantasma3 = [fantasma3.x, fantasma3.y, fantasma3.direccion];
 
             //Imprimimos el tablero guardandolo en una variable y a continuación imprimimos.
-            var imprimir = '';
             for (var i = 0; i < tablero.length; i++) {
-                for (var j = 0; j < tablero[i].length; j++) {
-                    imprimir += tablero[i][j] + ' ';
+
+                if (i != 0) {
+                  //  document.write("<br>");
                 }
-                console.log(imprimir);
-                imprimir = '';
+                for (var j = 0; j < tablero[i].length; j++) {
+
+                    if (tablero[i][j] == 1 && j != tablero.lenght - 1) {
+                    //    document.write("X");
+                    } else
+                    {
+                     //   document.write("U");
+                    }
+                }
+
             }
-
-
 
 
             //POSICIÓN ALEATORIA PACMAN
@@ -118,36 +124,9 @@ and open the template in the editor.
                 pacman.y = Math.floor((Math.random() * 30) + 0);
 
             } while (tablero[pacman.x][pacman.y] == 1);
-
-            //INICIO MOVIMIENTO PACMAN
-            var ok = false;
-            do {
-                pacman.direccion = Math.floor((Math.random() * 4) + 0);
-
-                if (pacman.direccion == 1 && tablero[pacman.x + 1][pacman.y] == 0) {
-                    alert(pacman.direccion = 1);
-                    ok = true;
-                }
-
-                if (pacman.direccion == 0 && tablero[pacman.x - 1][pacman.y] == 0) {
-                    alert(pacman.direccion = 0);
-                    ok = true;
-                }
-
-                if (pacman.direccion == 2 && tablero[pacman.x][pacman.y + 1] == 0) {
-                    alert(pacman.direccion = 2);
-                    ok = true;
-                }
-
-                if (pacman.direccion == 3 && tablero[pacman.x][pacman.y - 1] == 0) {
-                    alert(pacman.direccion = 3);
-                    ok = true;
-                }
-            } while (ok == false);
-
-
-
-
+            
+              pacman.direccion=direccionInicial(pacman.direccion, pacman.x, pacman.y);
+              
 
             //POSICIÓN ALEATORIA FANTASMA1
             do {
@@ -155,37 +134,8 @@ and open the template in the editor.
                 fantasma1.y = Math.floor((Math.random() * 30) + 0);
 
             } while (tablero[fantasma1.x][fantasma1.y] == 1);
-
-            //INICIO MOVIMIENTO FANTASMA1
-            var ok1 = false;
-            do {
-                fantasma1.direccion = Math.floor((Math.random() * 4) + 0);
-
-                if (fantasma1.direccion == 1 && tablero[fantasma1.x + 1][fantasma1.y] == 0) {
-                    alert(fantasma1.direccion = 1);
-                    ok1 = true;
-                }
-
-                if (fantasma1.direccion == 0 && tablero[fantasma1.x - 1][fantasma1.y] == 0) {
-                    alert(fantasma1.direccion = 0);
-                    ok1 = true;
-                }
-
-                if (fantasma1.direccion == 2 && tablero[fantasma1.x][fantasma1.y + 1] == 0) {
-                    alert(fantasma1.direccion = 2);
-                    ok1 = true;
-                }
-
-                if (fantasma1.direccion == 3 && tablero[fantasma1.x][fantasma1.y - 1] == 0) {
-                    alert(fantasma1.direccion = 3);
-                    ok1 = true;
-                }
-            } while (ok1 == false);
-
-
-
-
-
+            
+            fantasma1.direccion=direccionInicial(fantasma1.direccion, fantasma1.x, fantasma1.y);
 
             //POSICIÓN ALEATORIA FANTASMA2
             do {
@@ -193,38 +143,8 @@ and open the template in the editor.
                 fantasma2.y = Math.floor((Math.random() * 30) + 0);
 
             } while (tablero[fantasma2.x][fantasma2.y] == 1);
-
-            //INICIO MOVIMIENTO FANTASMA2
-            var ok2 = false;
-            do {
-                fantasma2.direccion = Math.floor((Math.random() * 4) + 0);
-
-                if (fantasma2.direccion == 1 && tablero[fantasma2.x + 1][fantasma2.y] == 0) {
-                    alert(fantasma2.direccion = 1);
-                    ok2 = true;
-                }
-
-                if (fantasma2.direccion == 0 && tablero[fantasma2.x - 1][fantasma2.y] == 0) {
-                    alert(fantasma2.direccion = 0);
-                    ok2 = true;
-                }
-
-                if (fantasma2.direccion == 2 && tablero[fantasma2.x][fantasma2.y + 1] == 0) {
-                    alert(fantasma2.direccion = 2);
-                    ok2 = true;
-                }
-
-                if (fantasma2.direccion == 3 && tablero[fantasma2.x][fantasma2.y - 1] == 0) {
-                    alert(fantasma2.direccion = 3);
-                    ok2 = true;
-                }
-            } while (ok2 == false);
-
-
-
-
-
-
+           
+           fantasma2.direccion=direccionInicial(fantasma2.direccion, fantasma2.x, fantasma2.y);
 
             //POSICIÓN ALEATORIA FANTASMA3
             do {
@@ -233,31 +153,36 @@ and open the template in the editor.
 
             } while (tablero[fantasma3.x][fantasma3.y] == 1);
 
-            //INICIO MOVIMIENTO FANTASMA3
-            var ok3 = false;
-            do {
-                fantasma3.direccion = Math.floor((Math.random() * 4) + 0);
+            fantasma3.direccion=direccionInicial(fantasma3.direccion, fantasma3.x, fantasma3.y);
+            
+            //ASIGNAMOS DIRECCIÓN INICIAL 
+            function direccionInicial(d, x, y) {
+                ok = false;
+                do {
+                    d = Math.floor((Math.random() * 4) + 0);
 
-                if (fantasma3.direccion == 1 && tablero[fantasma3.x + 1][fantasma3.y] == 0) {
-                    alert(fantasma3.direccion = 1);
-                    ok3 = true;
-                }
+                    if (d == 1 && tablero[x + 1][y] == 0) {
+                        d = 1;
+                        ok = true;
+                    }
 
-                if (fantasma3.direccion == 0 && tablero[fantasma3.x - 1][fantasma3.y] == 0) {
-                    alert(fantasma3.direccion = 0);
-                    ok3 = true;
-                }
+                    if (d == 0 && tablero[x - 1][y] == 0) {
+                        d = 0;
+                        ok = true;
+                    }
 
-                if (fantasma3.direccion == 2 && tablero[fantasma3.x][fantasma3.y + 1] == 0) {
-                    alert(fantasma3.direccion = 2);
-                    ok3 = true;
-                }
+                    if (d == 2 && tablero[x][y + 1] == 0) {
+                        d = 2;
+                        ok = true;
+                    }
 
-                if (fantasma3.direccion == 3 && tablero[fantasma3.x][fantasma3.y - 1] == 0) {
-                    alert(fantasma3.direccion = 3);
-                    ok3 = true;
-                }
-            } while (ok3 == false);
+                    if (d == 3 && tablero[x][y - 1] == 0) {
+                        d = 3;
+                        ok = true;
+                    }
+                } while (ok == false);
+                return d;
+            }
 
         </script>
     </body>
