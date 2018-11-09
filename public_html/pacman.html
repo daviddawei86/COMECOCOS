@@ -99,23 +99,7 @@ and open the template in the editor.
             var variableFantasma2 = [fantasma2.x, fantasma2.y, fantasma2.direccion];
             var variableFantasma3 = [fantasma3.x, fantasma3.y, fantasma3.direccion];
 
-            //Imprimimos el tablero guardandolo en una variable y a continuación imprimimos.
-            for (var i = 0; i < tablero.length; i++) {
 
-                if (i != 0) {
-                  //  document.write("<br>");
-                }
-                for (var j = 0; j < tablero[i].length; j++) {
-
-                    if (tablero[i][j] == 1 && j != tablero.lenght - 1) {
-                    //    document.write("X");
-                    } else
-                    {
-                     //   document.write("U");
-                    }
-                }
-
-            }
 
 
             //POSICIÓN ALEATORIA PACMAN
@@ -124,9 +108,9 @@ and open the template in the editor.
                 pacman.y = Math.floor((Math.random() * 30) + 0);
 
             } while (tablero[pacman.x][pacman.y] == 1);
-            
-              pacman.direccion=direccionInicial(pacman.direccion, pacman.x, pacman.y);
-              
+
+            pacman.direccion = direccionInicial(pacman.direccion, pacman.x, pacman.y);
+
 
             //POSICIÓN ALEATORIA FANTASMA1
             do {
@@ -134,8 +118,8 @@ and open the template in the editor.
                 fantasma1.y = Math.floor((Math.random() * 30) + 0);
 
             } while (tablero[fantasma1.x][fantasma1.y] == 1);
-            
-            fantasma1.direccion=direccionInicial(fantasma1.direccion, fantasma1.x, fantasma1.y);
+
+            fantasma1.direccion = direccionInicial(fantasma1.direccion, fantasma1.x, fantasma1.y);
 
             //POSICIÓN ALEATORIA FANTASMA2
             do {
@@ -143,8 +127,8 @@ and open the template in the editor.
                 fantasma2.y = Math.floor((Math.random() * 30) + 0);
 
             } while (tablero[fantasma2.x][fantasma2.y] == 1);
-           
-           fantasma2.direccion=direccionInicial(fantasma2.direccion, fantasma2.x, fantasma2.y);
+
+            fantasma2.direccion = direccionInicial(fantasma2.direccion, fantasma2.x, fantasma2.y);
 
             //POSICIÓN ALEATORIA FANTASMA3
             do {
@@ -153,9 +137,9 @@ and open the template in the editor.
 
             } while (tablero[fantasma3.x][fantasma3.y] == 1);
 
-            fantasma3.direccion=direccionInicial(fantasma3.direccion, fantasma3.x, fantasma3.y);
-            
-            //ASIGNAMOS DIRECCIÓN INICIAL 
+            fantasma3.direccion = direccionInicial(fantasma3.direccion, fantasma3.x, fantasma3.y);
+
+            //CALCULAMOS DIRECCION INICIAL y RECALCULA LA DIRECCION SI CHOCAMOS
             function direccionInicial(d, x, y) {
                 ok = false;
                 do {
@@ -183,6 +167,276 @@ and open the template in the editor.
                 } while (ok == false);
                 return d;
             }
+
+            //MOVIMIENTO +1 , EJECUTA METODO CALCULAR DIRECCION SI CHOCAMOS y LLAMA METODO CRUZE DE CAMINOS PARA COMPROBAR LOS POSIBLES CAMINOS
+            function movimientoLinealYchoque(d, x, y) {
+
+                var avance = true;
+
+                do {
+                    avance = true;
+
+                    //Switch segun la dirección
+                    switch (d) {
+
+                        case 1:
+
+                            if (tablero[x + 1][y] == 0) {
+                                x = x + 1;
+
+                            } else {
+                                do {
+                                    d = direccionInicial(d, x, y);
+                                } while (d == 0);
+                                avance = false;
+                            }
+
+                            if (d == 1) {
+                                d = cruzeDEcaminos(d, x, y);
+                            }
+
+                            break;
+
+                        case 0:
+
+                            if (tablero[x - 1][y] == 0) {
+                                x = x - 1;
+
+                            } else {
+                                do {
+                                    d = direccionInicial(d, x, y);
+                                } while (d == 1);
+                                avance = false;
+                            }
+                            if (d == 0) {
+                                d = cruzeDEcaminos(d, x, y);
+                            }
+                            break;
+
+                        case 2:
+
+                            if (tablero[x][y + 1] == 0) {
+                                y = y + 1;
+
+                            } else {
+
+                                do {
+                                    d = direccionInicial(d, x, y);
+                                } while (d == 3);
+                                avance = false;
+                            }
+
+                            if (d == 2) {
+                                d = cruzeDEcaminos(d, x, y);
+                            }
+
+                            break;
+
+                        case 3:
+
+                            if (tablero[x][y - 1] == 0) {
+                                y = y - 1;
+
+                            } else {
+
+                                do {
+                                    d = direccionInicial(d, x, y);
+                                } while (d == 2);
+                                avance = false;
+                            }
+
+                            if (d == 3) {
+                                d = cruzeDEcaminos(d, x, y);
+                            }
+                            break;
+                    }
+
+                } while (avance == false);
+
+                return [d, x, y];
+
+            }
+            //Segun los posibles caminos devolvera una nueva direccion
+            function cruzeDEcaminos(d, x, y) {
+
+                switch (d) {
+                    case 1:
+
+                        if (tablero[x + 1][y] == 0 && tablero[x][y + 1] == 0 && tablero[x][y - 1] != 0) {
+
+                            direc = [1, 2];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+
+                        }
+                        if (tablero[x + 1][y] == 0 && tablero[x][y - 1] == 0 && tablero[x][y + 1] != 0) {
+
+                            direc = [1, 3];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+
+                        }
+                        if (tablero[x + 1][y] == 0 && tablero[x][y - 1] == 0 && tablero[x][y + 1] == 0) {
+
+                            direc = [1, 2, 3];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+
+                        }
+                        break;
+
+                    case 0:
+                        if (tablero[x - 1][y] == 0 && tablero[x][y + 1] == 0 && tablero[x][y - 1] != 0) {
+
+                            direc = [0, 2];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+
+                        }
+                        if (tablero[x - 1][y] == 0 && tablero[x][y - 1] == 0 && tablero[x][y + 1] != 0) {
+
+                            direc = [0, 3];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+
+                        }
+                        if (tablero[x - 1][y] == 0 && tablero[x][y - 1] == 0 && tablero[x][y + 1] == 0) {
+
+                            direc = [0, 2, 3];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+
+                        }
+                        break;
+
+                    case 2:
+
+                        if (tablero[x][y + 1] == 0 && tablero[x + 1][y] == 0 && tablero[x - 1][y] != 0) {
+
+                            direc = [1, 2];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+
+                        }
+
+                        if (tablero[x][y + 1] == 0 && tablero[x - 1][y] == 0 && tablero[x + 1][y] != 0) {
+
+                            direc = [0, 2];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+
+                        }
+                        if (tablero[x][y + 1] == 0 && tablero[x - 1][y] == 0 && tablero[x + 1][y] == 0) {
+
+                            direc = [0, 1, 2];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+
+                        }
+                        break;
+
+                    case 3:
+
+                        if (tablero[x][y - 1] == 0 && tablero[x + 1][y] == 0 && tablero[x - 1][y] != 0) {
+                            direc = [3, 1];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+
+                        }
+
+                        if (tablero[x][y - 1] == 0 && tablero[x - 1][y] == 0 && tablero[x + 1][y] != 0) {
+                            direc = [3, 0];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+
+                        }
+                        if (tablero[x][y - 1] == 0 && tablero[x - 1][y] == 0 && tablero[x + 1][y] == 0) {
+                            direc = [0, 1, 3];
+                            total_direc = direc.length;
+                            numero = Math.floor(Math.random() * total_direc);
+                            d = direc[numero];
+                        }
+
+                        break;
+                }
+                return d;
+            }
+
+            //MOVIMIENTO CADA 1 SEC
+            function reFresh() {
+
+                var infoPacman = movimientoLinealYchoque(pacman.direccion, pacman.x, pacman.y);
+                pacman.direccion = infoPacman[0];
+                pacman.x = infoPacman[1];
+                pacman.y = infoPacman[2];
+
+                var infoFantasma1 = movimientoLinealYchoque(fantasma1.direccion, fantasma1.x, fantasma1.y);
+                fantasma1.direccion = infoFantasma1 [0];
+                fantasma1.x = infoFantasma1 [1];
+                fantasma1.y = infoFantasma1 [2];
+
+                var infoFantasma2 = movimientoLinealYchoque(fantasma2.direccion, fantasma2.x, fantasma2.y);
+                fantasma2.direccion = infoFantasma2[0];
+                fantasma2.x = infoFantasma2[1];
+                fantasma2.y = infoFantasma2[2];
+
+                var infoFantasma3 = movimientoLinealYchoque(fantasma3.direccion, fantasma3.x, fantasma3.y);
+                fantasma3.direccion = infoFantasma3[0];
+                fantasma3.x = infoFantasma3[1];
+                fantasma3.y = infoFantasma3[2];
+                //  document.write(" direccion : " + pacman.direccion, " ejeX : " + pacman.x, " ejeY : " + pacman.y + " - ");
+
+                document.body.innerHTML = "";
+
+
+                // IMPRIMIMOS TABLA PARA PREVISUALIZAR
+
+                var str = "V";
+                var result = str.fontcolor("blue");
+                var strv = "X";
+                var result2 = str.fontcolor("red");
+
+                for (var i = 0; i < tablero.length; i++) {
+
+                    if (i != 0) {
+                        document.write("<br>");
+                    }
+                    for (var j = 0; j < tablero[i].length; j++) {
+
+                        if (tablero[i][j] == 1 && j != tablero.lenght - 1) {
+                            document.write(result2);
+
+                        } else
+                        {
+                            if (pacman.x == i && pacman.y == j) {
+
+                                document.write(result);
+                            } else if (fantasma1.x == i && fantasma1.y == j) {
+
+                                document.write("M");
+                            } else {
+                                document.write("U");
+                            }
+
+                        }
+                    }
+
+                }
+            }
+
+            window.setInterval("reFresh()", 500);
+
 
         </script>
     </body>
