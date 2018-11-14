@@ -8,11 +8,28 @@ and open the template in the editor.
     <head>
         <title>DAVID RODRIGUEZ</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     </head>
     <body>
+        <p id="demo"></p>
+        <!-- Imatges que farem servir en el nostre espai de dibuix, estan ocultades -->
+        <img src="seta.jpg" id="seta" style="display: none;">
+        <img src="fantasma.jpg" id="fantasma" style="display: none;">
+        <img src="bowser.png" id="bowser" style="display: none;">
+        <img src="pared.png" id="pared" style="display: none;">
+        <img src="blanco.png" id="blanco" style="display: none;">
+        <img src="mario.png" id="mario" style="display: none;">
+
+        <!-- Espai de dibuix -->
+        <canvas id="espai" width="5000" height="5000"> </canvas>
 
         <script>
+
+            //Variables para la puntuación
+            var segundos = 0;
+            var minutos = 0;
+            var puntuacion = 0;
+            var total = 0;
 
             //DIRECCIÓN
             var arriba = 0;  //87
@@ -21,7 +38,6 @@ and open the template in the editor.
             var izquierda = 3;  //65
             //Inicializamos dirección en 4 para que no coincida con el valor de arrriba.
             var direccion = 4;
-
 
             //OBJETO PACMAN
             var pacman = {};
@@ -80,16 +96,11 @@ and open the template in the editor.
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
             ];
 
-
-
             //Guardamos la posición y la dirección de los objetos en una array para cada una
             var variablePacman = [pacman.x, pacman.y, pacman.direccion];
             var variableFantasma1 = [fantasma1.x, fantasma1.y, fantasma1.direccion];
             var variableFantasma2 = [fantasma2.x, fantasma2.y, fantasma2.direccion];
             var variableFantasma3 = [fantasma3.x, fantasma3.y, fantasma3.direccion];
-
-
-
 
             //POSICIÓN ALEATORIA PACMAN
             do {
@@ -154,18 +165,21 @@ and open the template in the editor.
                         ok = true;
                     }
                 } while (ok == false);
+
                 return d;
             }
 
             //MOVIMIENTO +1 , EJECUTA METODO CALCULAR DIRECCION SI CHOCAMOS y LLAMA METODO CRUZE DE CAMINOS PARA COMPROBAR LOS POSIBLES CAMINOS
             function movimientoLinealYchoque(d, x, y) {
 
-
+                //Con el do while y boolean avance controlamos que las direcciones erroneas no sean adjudicadas al movimiento x,y
+                //de pacman y los fantasmas para que no se queden parados. Cuando la nueva direccion sea valida sale del bucle
+                // y hace que los objetos se muevan por un camino sin obstaculos.
                 var avance = true;
 
                 do {
                     avance = true;
-                   
+
                     //Switch segun la dirección
                     switch (d) {
 
@@ -175,9 +189,11 @@ and open the template in the editor.
                                 x = x + 1;
 
                             } else {
+                                //Pacman no podrá volver hacia atras si choca o encuentra un cruce (Funcionalidad extra)
                                 do {
                                     d = direccionInicial(d, x, y);
                                 } while (d == 0);
+
                                 avance = false;
                             }
 
@@ -193,9 +209,11 @@ and open the template in the editor.
                                 x = x - 1;
 
                             } else {
+                                //Pacman no podrá volver hacia atras si choca o encuentra un cruce (Funcionalidad extra)
                                 do {
                                     d = direccionInicial(d, x, y);
                                 } while (d == 1);
+
                                 avance = false;
                             }
                             if (d == 0) {
@@ -211,8 +229,10 @@ and open the template in the editor.
                             } else {
 
                                 do {
+                                    //Pacman no podrá volver hacia atras si choca o encuentra un cruce (Funcionalidad extra)
                                     d = direccionInicial(d, x, y);
                                 } while (d == 3);
+
                                 avance = false;
                             }
 
@@ -230,8 +250,10 @@ and open the template in the editor.
                             } else {
 
                                 do {
+                                    //Pacman no podrá volver hacia atras si choca o encuentra un cruce (Funcionalidad extra)
                                     d = direccionInicial(d, x, y);
                                 } while (d == 2);
+
                                 avance = false;
                             }
 
@@ -242,16 +264,16 @@ and open the template in the editor.
                     }
 
                 } while (avance == false);
-
+                //devolvemos direccion ,x,y sin obstaculos
                 return [d, x, y];
 
             }
-            //Segun los posibles caminos devolvera una nueva direccion
+            //Según los posibles caminos devolvera una nueva direccion
             function cruzeDEcaminos(d, x, y) {
 
                 switch (d) {
                     case 1:
-
+                        //Comprueba los cruces , depende el cruce recalcula dirección sin volver hacia atrás
                         if (tablero[x + 1][y] == 0 && tablero[x][y + 1] == 0 && tablero[x][y - 1] != 0) {
 
                             direc = [1, 2];
@@ -374,18 +396,26 @@ and open the template in the editor.
                     if (keyCode == 87) {
                         pacman.siguienteDireccion = 0;
                         pacman.direccion = pacman.siguienteDireccion;
+
+
                     } else if (keyCode == 83) {
                         pacman.siguienteDireccion = 1;
                         pacman.direccion = pacman.siguienteDireccion;
+
+
                     } else if (keyCode == 68) {
                         pacman.siguienteDireccion = 2;
                         pacman.direccion = pacman.siguienteDireccion;
+
+
                     } else if (keyCode == 65) {
                         pacman.siguienteDireccion = 3;
                         pacman.direccion = pacman.siguienteDireccion;
+
                     }
                 }
 
+                //Llama métodos para el movimiento y el choque pasando parametros.
                 var infoPacman = movimientoLinealYchoque(pacman.direccion, pacman.x, pacman.y);
                 pacman.direccion = infoPacman[0];
                 pacman.x = infoPacman[1];
@@ -406,89 +436,100 @@ and open the template in the editor.
                 fantasma3.x = infoFantasma3[1];
                 fantasma3.y = infoFantasma3[2];
 
-                document.write(" direccion : " + pacman.direccion, " ejeX : " + pacman.x, " ejeY : " + pacman.y + " - " + "<br>");
-                document.write(" direccion : " + fantasma1.direccion, " ejeX : " + fantasma1.x, " ejeY : " + fantasma1.y + " - " + "<br>");
-                document.write(" direccion : " + fantasma2.direccion, " ejeX : " + fantasma2.x, " ejeY : " + fantasma2.y + " - " + "<br>")
-                document.write(" direccion : " + fantasma3.direccion, " ejeX : " + fantasma3.x, " ejeY : " + fantasma3.y + " - " + "<br>")
-                document.write(" direccion : " + fantasma3.direccion, " ejeX : " + fantasma3.x, " ejeY : " + fantasma3.y + " - " + "<br>")
-                document.body.innerHTML = "";
 
+                //TIEMPO EN JUEGO Y PUNTUACIÓN
+                if (segundos == 60) {
+                    minutos++;
+                    segundos = 0;
+                } else if (minutos == 1) {
+
+                    x = isNaN(parseInt(document.cookie)) ? 0 : parseInt(document.cookie);
+                    var total = x + puntuacion;
+                    document.cookie = total;
+
+                    clearInterval(id);
+                    alert("PASO 1 MINUTO GANASTE!!");
+                }
+
+                segundos++;
+                puntuacion++;
+
+                var x = document.cookie;
 
                 //MUERTE DE PACMAN
+                muertePacman(pacman.x, pacman.y, fantasma1.x, fantasma1.y);
+                muertePacman(pacman.x, pacman.y, fantasma2.x, fantasma2.y);
+                muertePacman(pacman.x, pacman.y, fantasma3.x, fantasma3.y);
 
-                if (pacman.x == fantasma1.x && pacman.y == fantasma1.y
-                        || pacman.x + 1 == fantasma1.x && pacman.y == fantasma1.y
-                        || pacman.x - 1 == fantasma1.x && pacman.y == fantasma1.y
-                        || pacman.x == fantasma1.x && pacman.y + 1 == fantasma1.y
-                        || pacman.x == fantasma1.x && pacman.y - 1 == fantasma1.y
-                        ) {
+                //Comprueba las casillas adjuntas
+                function muertePacman(pX, pY, fX, fY) {
 
-                    clearInterval(id);
+                    if (pX == fX && pY == fY
+                            || pX + 1 == fX && pY == fY
+                            || pX - 1 == fX && pY == fY
+                            || pX == fX && pY + 1 == fY
+                            || pX == fX && pY - 1 == fY
+                            ) {
+                        document.cookie = 0;
+                        clearInterval(id);
+
+                        //FUNCION COORDINAR MUERTE DE PACMAN CON ALERT GAME OVER
+                        gameOver();
+                        function gameOver() {
+                            setTimeout(function () {
+                                alert("GAME OVER");
+                            }, 1000);
+                        }
+
+                    }
                 }
-                if (pacman.x == fantasma2.x && pacman.y == fantasma2.y
-                        || pacman.x + 1 == fantasma2.x && pacman.y == fantasma2.y
-                        || pacman.x - 1 == fantasma2.x && pacman.y == fantasma2.y
-                        || pacman.x == fantasma2.x && pacman.y + 1 == fantasma2.y
-                        || pacman.x == fantasma2.x && pacman.y - 1 == fantasma2.y
-                        ) {
-
-                    clearInterval(id);
-                }
-                if (pacman.x == fantasma3.x && pacman.y == fantasma3.y
-                        || pacman.x + 1 == fantasma3.x && pacman.y == fantasma3.y
-                        || pacman.x - 1 == fantasma3.x && pacman.y == fantasma3.y
-                        || pacman.x == fantasma3.x && pacman.y + 1 == fantasma3.y
-                        || pacman.x == fantasma3.x && pacman.y - 1 == fantasma3.y
-                        ) {
-
-                    clearInterval(id);
-                }
-
 
                 // IMPRIMIMOS TABLA PARA PREVISUALIZAR
+                function pintar() {
+                          
+                    var canvas = document.getElementById("espai");
+                    var ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, 5000, 5000);
 
-                var str = "█";
-                var result = str.fontcolor("blue");
-                var strv = "█";
-                var result2 = str.fontcolor("red");
-                var fa1 = "█";
-                var result3 = str.fontcolor("orange");
-                var fa2 = "█";
-                var result4 = str.fontcolor("green");
-                var fa3 = "█";
-                var result5 = str.fontcolor("black");
+                    var img;
 
-                for (var i = 0; i < tablero.length; i++) {
 
-                    if (i != 0) {
-                        document.write("<br>");
-                    }
-                    for (var j = 0; j < tablero[i].length; j++) {
+                    for (var i = 0; i < tablero.length; i++) {
+                        for (var j = 0; j < tablero[i].length; j++) {
 
-                        if (tablero[i][j] == 1 && j != tablero.lenght - 1) {
-                            document.write(result2);
+                            if (tablero[i][j] == 1 && j != tablero.lenght - 1) {
 
-                        } else
-                        {
-                            if (pacman.x == i && pacman.y == j) {
-                                document.write(result);
-                            } else if (fantasma1.x == i && fantasma1.y == j) {
-                                document.write(result3);
-                            } else if (fantasma2.x == i && fantasma2.y == j) {
-                                document.write(result4);
-                            } else if (fantasma3.x == i && fantasma3.y == j) {
-                                document.write(result5);
-                            } else {
-                                document.write("U");
+                                img = document.getElementById("pared");
+                            } else
+                            {
+                                if (pacman.x == i && pacman.y == j) {
+
+                                    img = document.getElementById("mario");
+
+                                } else if (fantasma1.x == i && fantasma1.y == j) {
+                                    img = document.getElementById("bowser");
+                                } else if (fantasma2.x == i && fantasma2.y == j) {
+                                    img = document.getElementById("fantasma");
+                                } else if (fantasma3.x == i && fantasma3.y == j) {
+                                    img = document.getElementById("seta");
+                                } else {
+                                    img = document.getElementById("blanco");
+
+                                }
                             }
+                            ctx.drawImage(img, i * 20, j * 20, 20, 20);
                         }
                     }
                 }
 
+       
+                document.getElementById("demo").innerHTML = "PUNTUACIÓN MÁXIMA   : " + x + "   MINUTOS : " + minutos + "   SEGUNDOS : " + segundos + "<br>";
+                pintar();
+
             }
-
-            var id = setInterval("reFresh()", 200);
-
+            //Ejecución de reFresh cada segundo
+            var id = setInterval(reFresh, 1000);
         </script>
+
     </body>
 </html>
